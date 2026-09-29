@@ -1,0 +1,44 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-yt: #ff0000;
+  --color-yt-press: #cc0000;
+  --color-ink: #0f0f0f;
+  --color-paper: #ffffff;
+  --color-panel: #f2f2f2;
+  --color-panel-dark: #212121;
+  --color-muted: #606060;
+  --color-muted-dark: #aaaaaa;
+  --font-sans: Roboto, ui-sans-serif, system-ui, sans-serif;
+}
+
+html {
+  color-scheme: light;
+  background: #ffffff;
+}
+
+html.dark {
+  color-scheme: dark;
+  background: #0f0f0f;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Roboto, ui-sans-serif, system-ui, sans-serif;
+}
+
+.field {
+  width: 100%;
+  border-radius: 0.75rem;
+  border: 1px solid rgb(0 0 0 / 0.12);
+  background: transparent;
+  padding: 0.65rem 0.8rem;
+  color: inherit;
+}
+
+html.dark .field {
+  border-color: rgb(255 255 255 / 0.16);
+}

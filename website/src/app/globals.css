@@ -1,0 +1,64 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-yt: #ff0000;
+  --color-yt-press: #cc0000;
+  --color-ink: #0f0f0f;
+  --color-paper: #ffffff;
+  --color-panel: #f2f2f2;
+  --color-panel-dark: #212121;
+  --color-muted: #606060;
+  --color-muted-dark: #aaaaaa;
+  --font-sans: var(--font-roboto), ui-sans-serif, system-ui, sans-serif;
+}
+
+:root {
+  --header-height: calc(4rem + 1px);
+}
+
+html {
+  color-scheme: light;
+  background: #ffffff;
+  transition: background-color 0.35s ease, color 0.35s ease;
+}
+
+html.dark {
+  color-scheme: dark;
+  background: #0f0f0f;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    transition: none;
+  }
+}
+
+body {
+  min-height: 100vh;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: default;
+}
+
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.ring-spin {
+  animation: spin-slow 22s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ring-spin {
+    animation: none;
+  }
+}

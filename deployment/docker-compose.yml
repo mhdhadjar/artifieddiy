@@ -1,0 +1,68 @@
+# yaml-language-server: $schema=schemas/compose-spec.json
+name: artifieddiy
+
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+
+  api:
+    build:
+      context: ../api
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      PORT: 2201
+      MONGODB_URI: mongodb://mongo:27017/artifieddiy
+      UPLOAD_DIR: /data/uploads
+    volumes:
+      - uploads:/data/uploads
+    depends_on:
+      mongo:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:2201/health').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 40s
+
+  website:
+    build:
+      context: ../website
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      PORT: 2202
+      API_INTERNAL_URL: http://api:2201
+    depends_on:
+      - api
+
+  admin:
+    build:
+      context: ../admin
+    env_file:
+      - path: .env
+        required: false
+    depends_on:
+      - api
+
+volumes:
+  mongo_data:
+  uploads:

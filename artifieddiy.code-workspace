@@ -1,0 +1,22 @@
+{
+  "folders": [
+    { "name": "API", "path": "api" },
+    { "name": "Website", "path": "website" },
+    { "name": "Admin", "path": "admin" },
+    { "name": "Deployment", "path": "deployment" },
+  ],
+  "settings": {
+    "explorer.excludeGitIgnore": false,
+    "files.exclude": {
+      "**/node_modules": true,
+      "**/.next": true,
+      "**/dist": true,
+    },
+    "search.exclude": {
+      "**/node_modules": true,
+      "**/.next": true,
+      "**/dist": true,
+    },
+    "cSpell.words": ["Artified"],
+  },
+}
