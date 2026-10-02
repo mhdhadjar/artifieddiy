@@ -46,3 +46,32 @@ export type SessionUser = {
   picture: string;
   role: 'user' | 'admin';
 };
+
+export type WeblogBlock = {
+  type: 'markdown' | 'image';
+  markdown: string;
+  imageUrl: string;
+  alt: string;
+};
+
+export type Weblog = {
+  id: string;
+  title: string;
+  address: string;
+  description: string;
+  youtubeUrl: string;
+  youtubeId: string;
+  mainImage: string;
+  content: WeblogBlock[];
+  published: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type WeblogSummary = {
+  address: string;
+  title: string;
+  description: string;
+  mainImage: string;
+  updatedAt: string;
+};

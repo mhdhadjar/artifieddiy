@@ -6,7 +6,7 @@ export default function NotFound() {
     <section className="mx-auto max-w-xl px-4 py-24 text-center">
       <h1 className="text-3xl font-medium">Page not found</h1>
       <p className="mt-3 text-muted dark:text-muted-dark">
-        That video or page is not on Artified DIY.
+        That page is not on Artified DIY.
       </p>
       <Link
         href="/"

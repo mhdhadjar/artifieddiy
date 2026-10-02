@@ -1,5 +1,6 @@
 import {
   ArrowSquareOutIcon,
+  NewspaperIcon,
   PlayIcon,
   SignOutIcon,
   TagIcon,
@@ -41,6 +42,12 @@ export function Shell({
               <span className="inline-flex items-center gap-1.5">
                 <PlayIcon size={16} weight="fill" />
                 Videos
+              </span>
+            </NavLink>
+            <NavLink to="/weblogs" className={navClass}>
+              <span className="inline-flex items-center gap-1.5">
+                <NewspaperIcon size={16} />
+                Weblog
               </span>
             </NavLink>
             <NavLink to="/tags" className={navClass}>

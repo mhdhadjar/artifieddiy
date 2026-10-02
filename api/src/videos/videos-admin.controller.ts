@@ -28,6 +28,7 @@ import {
   UploadProjectFileDto,
 } from './dto/video.dto';
 import { MulterExceptionFilter } from './multer.filter';
+import { archiveHeaders, createProjectArchive } from './project-file.archive';
 import {
   MAX_PROJECT_FILES,
   UploadRequest,
@@ -73,6 +74,17 @@ export class VideosAdminController {
     @Req() req: UploadRequest,
   ) {
     return this.videos.addFiles(id, files ?? [], dto, req.rejectedFiles ?? []);
+  }
+
+  @Get(':id/files/archive/:category')
+  async downloadArchive(
+    @Param('id') id: string,
+    @Param('category') category: string,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const archive = await this.videos.openAdminArchive(id, category);
+    res.set(archiveHeaders(archive.filename));
+    return new StreamableFile(createProjectArchive(archive.entries));
   }
 
   @Get(':id/files/:fileId')

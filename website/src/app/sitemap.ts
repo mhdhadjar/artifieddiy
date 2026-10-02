@@ -1,12 +1,16 @@
 import type { MetadataRoute } from 'next';
-import { getTags, getVideos } from '@/lib/api';
+import { getTags, getVideos, getWeblogs } from '@/lib/api';
 import { siteOrigin } from '@/lib/site';
 
 export const dynamic = 'force-dynamic';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const origin = siteOrigin();
-  const [{ videos }, tags] = await Promise.all([getVideos(), getTags()]);
+  const [{ videos }, tags, weblogs] = await Promise.all([
+    getVideos(),
+    getTags(),
+    getWeblogs(),
+  ]);
 
   const pages: MetadataRoute.Sitemap = [
     {
@@ -57,6 +61,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'weekly',
       priority: 0.8,
       images: video.thumbnail ? [video.thumbnail] : undefined,
+    });
+  }
+
+  for (const post of weblogs) {
+    const updated = new Date(post.updatedAt);
+    pages.push({
+      url: `${origin}/${encodeURIComponent(post.address)}`,
+      lastModified: Number.isNaN(updated.getTime()) ? undefined : updated,
+      changeFrequency: 'weekly',
+      priority: 0.7,
+      images: post.mainImage ? [post.mainImage] : undefined,
     });
   }
 

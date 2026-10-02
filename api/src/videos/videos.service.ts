@@ -21,10 +21,13 @@ import {
   MAX_PROJECT_FILES,
   SkippedProjectFile,
   assertAllowedExtension,
+  categoryArchiveFilename,
   displayNameFromUpload,
   downloadFilename,
   fileExtension,
+  isProjectFileCategory,
   md5File,
+  uniqueArchiveEntryName,
 } from './project-file';
 import { ProjectFileStorage } from './project-file.storage';
 import { ProjectFile, Video, VideoDocument } from './video.schema';
@@ -325,6 +328,17 @@ export class VideosService {
     );
   }
 
+  async openAdminArchive(id: string, category: string) {
+    return this.openArchive(await this.videos.findById(id).exec(), category);
+  }
+
+  async openPublicArchive(slug: string, category: string) {
+    return this.openArchive(
+      await this.videos.findOne({ slug, published: true }).exec(),
+      category,
+    );
+  }
+
   private cleanItems(items: AffiliateItemDto[]) {
     return items.map((item) => ({
       name: item.name.trim(),
@@ -411,6 +425,37 @@ export class VideosService {
       throw new NotFoundException('File not found');
     }
     return file;
+  }
+
+  private async openArchive(video: VideoDocument | null, category: string) {
+    if (!video || !isProjectFileCategory(category)) {
+      throw new NotFoundException('Files not found');
+    }
+    const matched = video.files.filter((file) => file.category === category);
+    if (matched.length === 0) {
+      throw new NotFoundException('Files not found');
+    }
+    const used = new Set<string>();
+    const entries: { path: string; name: string }[] = [];
+    for (const file of matched) {
+      const path = this.storage.resolve(video.id, file.storedName);
+      try {
+        await access(path);
+      } catch {
+        continue;
+      }
+      entries.push({
+        path,
+        name: uniqueArchiveEntryName(downloadFilename(file.name, file.storedName), used),
+      });
+    }
+    if (entries.length === 0) {
+      throw new NotFoundException('Files not found');
+    }
+    return {
+      filename: categoryArchiveFilename(video.slug, category),
+      entries,
+    };
   }
 
   private async openFile(video: VideoDocument | null, fileId: string) {

@@ -58,9 +58,29 @@ export function ProjectFiles({
         >
           {visible.map((group) => {
             const Icon = group.icon;
+            const archiveHref = `${api}/videos/${encodeURIComponent(slug)}/files/archive/${encodeURIComponent(group.category)}`;
             return (
               <div key={group.category}>
-                <h3 className="font-medium">{group.title}</h3>
+                <div className="flex items-center justify-between gap-3">
+                  <h3 className="font-medium">{group.title}</h3>
+                  {group.files.length > 1 ? (
+                    unlocked ? (
+                      <a
+                        href={archiveHref}
+                        aria-label={`Download all ${group.title}`}
+                        className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-paper px-3 py-1.5 text-sm font-medium transition hover:bg-black/6 dark:bg-ink dark:hover:bg-white/10"
+                      >
+                        <DownloadSimpleIcon size={16} />
+                        Download all
+                      </a>
+                    ) : (
+                      <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-paper px-3 py-1.5 text-sm font-medium dark:bg-ink">
+                        <DownloadSimpleIcon size={16} />
+                        Download all
+                      </span>
+                    )
+                  ) : null}
+                </div>
                 <ul className="mt-3 grid gap-3">
                   {group.files.map((file) => {
                     const meta = file.extension

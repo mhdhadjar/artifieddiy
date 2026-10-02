@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { archiveHeaders, createProjectArchive } from './project-file.archive';
 import { attachmentDisposition } from './project-file';
 import { VideosService } from './videos.service';
 
@@ -20,6 +21,18 @@ export class VideosController {
   @Get()
   list(@Query('tag') tag?: string) {
     return this.videos.listPublic(tag);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':slug/files/archive/:category')
+  async downloadArchive(
+    @Param('slug') slug: string,
+    @Param('category') category: string,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const archive = await this.videos.openPublicArchive(slug, category);
+    res.set(archiveHeaders(archive.filename));
+    return new StreamableFile(createProjectArchive(archive.entries));
   }
 
   @UseGuards(JwtAuthGuard)

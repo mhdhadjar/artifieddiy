@@ -129,6 +129,37 @@ export function attachmentDisposition(filename: string) {
   return `attachment; filename="${ascii}"; filename*=UTF-8''${encodeURIComponent(cleaned)}`;
 }
 
+export function isProjectFileCategory(value: string): value is ProjectFileCategory {
+  return (PROJECT_FILE_CATEGORIES as readonly string[]).includes(value);
+}
+
+const ARCHIVE_LABELS: Record<ProjectFileCategory, string> = {
+  tutorial: 'tutorial',
+  model3d: '3d-files',
+  printing: 'printing-files',
+  other: 'other-files',
+};
+
+export function categoryArchiveFilename(slug: string, category: ProjectFileCategory) {
+  const safeSlug = slug.replace(/[^\w.-]+/g, '-').replace(/^[-.]+|[-.]+$/g, '') || 'project';
+  return `${safeSlug}-${ARCHIVE_LABELS[category]}.zip`;
+}
+
+export function uniqueArchiveEntryName(filename: string, used: Set<string>) {
+  const cleaned =
+    filename.replace(/[\\/]/g, '_').replace(/[\u0000-\u001f]/g, '').trim() || 'file';
+  const extension = fileExtension(cleaned);
+  const stem = (extension ? cleaned.slice(0, -extension.length) : cleaned) || 'file';
+  let candidate = cleaned;
+  let index = 2;
+  while (used.has(candidate.toLowerCase())) {
+    candidate = `${stem}-${index}${extension}`;
+    index += 1;
+  }
+  used.add(candidate.toLowerCase());
+  return candidate;
+}
+
 export function projectFileUploadOptions() {
   return {
     storage: diskStorage({

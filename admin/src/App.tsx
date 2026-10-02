@@ -7,6 +7,8 @@ import { ThemeToggle } from './components/ThemeToggle';
 import { TagsPage } from './pages/TagsPage';
 import { VideoEditor } from './pages/VideoEditor';
 import { VideosPage } from './pages/VideosPage';
+import { WeblogEditor } from './pages/WeblogEditor';
+import { WeblogsPage } from './pages/WeblogsPage';
 import { SessionUser } from './types';
 
 type Gate = 'loading' | 'admin' | 'guest' | 'forbidden';
@@ -49,7 +51,7 @@ export function App() {
         <p className="mt-2 text-sm text-muted dark:text-muted-dark">
           {gate === 'forbidden'
             ? 'This panel is only available to admin accounts.'
-            : 'Sign in with Google to manage videos.'}
+            : 'Sign in with Google to manage the site.'}
         </p>
         {gate === 'guest' ? (
           <button
@@ -85,6 +87,9 @@ export function App() {
         <Route index element={<VideosPage />} />
         <Route path="videos/new" element={<VideoEditor />} />
         <Route path="videos/:id" element={<VideoEditor />} />
+        <Route path="weblogs" element={<WeblogsPage />} />
+        <Route path="weblogs/new" element={<WeblogEditor />} />
+        <Route path="weblogs/:id" element={<WeblogEditor />} />
         <Route path="tags" element={<TagsPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>

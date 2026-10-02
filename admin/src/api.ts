@@ -1,4 +1,4 @@
-import { ProjectFileCategory, SessionUser, Tag, Video, YoutubePreview } from './types';
+import { ProjectFileCategory, SessionUser, Tag, Video, Weblog, YoutubePreview } from './types';
 
 export function apiUrl() {
   return import.meta.env.VITE_API_URL ?? 'http://localhost:2201';
@@ -101,4 +101,23 @@ export const api = {
     }),
   removeTag: (id: string) =>
     request<{ ok: boolean }>(`/admin/tags/${id}`, { method: 'DELETE' }),
+  weblogs: () => request<Weblog[]>('/admin/weblogs'),
+  weblog: (id: string) => request<Weblog>(`/admin/weblogs/${id}`),
+  createWeblog: (body: unknown) =>
+    request<Weblog>('/admin/weblogs', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    }),
+  updateWeblog: (id: string, body: unknown) =>
+    request<Weblog>(`/admin/weblogs/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(body),
+    }),
+  removeWeblog: (id: string) =>
+    request<{ ok: boolean }>(`/admin/weblogs/${id}`, { method: 'DELETE' }),
+  uploadWeblogImage: (file: File) => {
+    const body = new FormData();
+    body.set('image', file);
+    return request<{ url: string }>('/admin/weblogs/images', { method: 'POST', body });
+  },
 };

@@ -152,26 +152,38 @@ export function FileManager({
               <div key={group.category} className="rounded-xl bg-panel p-3 dark:bg-panel-dark">
                 <div className="flex items-center justify-between gap-3">
                   <h3 className="text-sm font-medium">{group.title}</h3>
-                  <label
-                    className={`inline-flex items-center gap-1 text-sm font-medium text-yt ${
-                      busy ? 'pointer-events-none opacity-50' : 'cursor-pointer'
-                    }`}
-                  >
-                    <UploadSimpleIcon size={16} />
-                    {!group.multiple && listed.length > 0 ? 'Replace' : 'Upload'}
-                    <input
-                      type="file"
-                      accept={group.accept}
-                      multiple={group.multiple}
-                      className="hidden"
-                      disabled={Boolean(busy)}
-                      onChange={(event) => {
-                        const list = event.target.files;
-                        event.target.value = '';
-                        void upload(group.category, list);
-                      }}
-                    />
-                  </label>
+                  <div className="flex items-center gap-3">
+                    {listed.length > 1 ? (
+                      <a
+                        href={`${apiUrl()}/admin/videos/${videoId}/files/archive/${encodeURIComponent(group.category)}`}
+                        aria-label={`Download all ${group.title}`}
+                        className="inline-flex items-center gap-1 text-sm font-medium text-yt"
+                      >
+                        <DownloadSimpleIcon size={16} />
+                        Download all
+                      </a>
+                    ) : null}
+                    <label
+                      className={`inline-flex items-center gap-1 text-sm font-medium text-yt ${
+                        busy ? 'pointer-events-none opacity-50' : 'cursor-pointer'
+                      }`}
+                    >
+                      <UploadSimpleIcon size={16} />
+                      {!group.multiple && listed.length > 0 ? 'Replace' : 'Upload'}
+                      <input
+                        type="file"
+                        accept={group.accept}
+                        multiple={group.multiple}
+                        className="hidden"
+                        disabled={Boolean(busy)}
+                        onChange={(event) => {
+                          const list = event.target.files;
+                          event.target.value = '';
+                          void upload(group.category, list);
+                        }}
+                      />
+                    </label>
+                  </div>
                 </div>
                 {listed.length === 0 ? (
                   <p className="mt-3 text-sm text-muted dark:text-muted-dark">{group.empty}</p>

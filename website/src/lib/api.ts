@@ -1,4 +1,4 @@
-import { Tag, Video } from './types';
+import { Tag, Video, Weblog, WeblogSummary } from './types';
 
 function internalApi() {
   return (
@@ -54,5 +54,38 @@ export async function getTags(): Promise<Tag[]> {
     return (await response.json()) as Tag[];
   } catch {
     return [];
+  }
+}
+
+export async function getWeblogs(): Promise<WeblogSummary[]> {
+  try {
+    const response = await fetch(`${internalApi()}/weblogs`, { cache: 'no-store' });
+    if (!response.ok) {
+      return [];
+    }
+    return (await response.json()) as WeblogSummary[];
+  } catch {
+    return [];
+  }
+}
+
+export async function getWeblog(
+  address: string,
+): Promise<{ weblog: Weblog | null; error: boolean }> {
+  try {
+    const response = await fetch(
+      `${internalApi()}/weblogs/${encodeURIComponent(address)}`,
+      { cache: 'no-store' },
+    );
+    if (response.status === 404) {
+      return { weblog: null, error: false };
+    }
+    if (!response.ok) {
+      return { weblog: null, error: true };
+    }
+    const weblog = (await response.json()) as Weblog;
+    return { weblog, error: false };
+  } catch {
+    return { weblog: null, error: true };
   }
 }

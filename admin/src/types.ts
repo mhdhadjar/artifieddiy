@@ -47,6 +47,28 @@ export type SessionUser = {
   role: 'user' | 'admin';
 };
 
+export type WeblogBlock = {
+  type: 'markdown' | 'image';
+  markdown: string;
+  imageUrl: string;
+  alt: string;
+};
+
+export type Weblog = {
+  id: string;
+  title: string;
+  address: string;
+  description: string;
+  youtubeUrl: string;
+  youtubeId: string;
+  mainImage: string;
+  content: WeblogBlock[];
+  contentCount: number;
+  published: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type YoutubePreview = {
   youtubeId: string;
   url: string;
